@@ -11,7 +11,6 @@ import flixel.util.FlxTimer;
 import lime.app.Application;
 import flixel.system.FlxSound;
 import openfl.utils.Assets;
-import openfl.utils.AssetType;
 
 import openfl.Lib;
 
@@ -20,7 +19,8 @@ using StringTools;
 class VideoState extends MusicBeatState
 {
 	public var leSource:String = "";
-	public var transClass:FlxState;
+	//public var transClass:FlxState;
+	public var transFunction:Void->Void;
 	public var txt:FlxText;
 	public var fuckingVolume:Float = 1;
 	public var notDone:Bool = true;
@@ -31,14 +31,13 @@ class VideoState extends MusicBeatState
 	public var videoFrames:Int = 0;
 	public var defaultText:String = "";
 	public var doShit:Bool = false;
-	public var pauseText:String = "Press P To Pause/Unpause";
 
-	public function new(source:String, toTrans:FlxState)
+	public function new(source:String)
 	{
 		super();
 		
 		leSource = source;
-		transClass = toTrans;
+		//transClass = toTrans;
 	}
 	
 	override function create()
@@ -163,40 +162,21 @@ class VideoState extends MusicBeatState
 			FlxG.sound.music.volume = 0;
 		}
 		GlobalVideo.get().update(elapsed);
-
-		if (controls.RESET)
-		{
-			GlobalVideo.get().restart();
-		}
 		
-		if (FlxG.keys.justPressed.P)
-		{
-			txt.text = pauseText;
-			trace("PRESSED PAUSE");
-			GlobalVideo.get().togglePause();
-			if (GlobalVideo.get().paused)
-			{
-				GlobalVideo.get().alpha();
-			} else {
-				GlobalVideo.get().unalpha();
-				txt.text = defaultText;
-			}
-		}
-		
-		if (controls.ACCEPT || GlobalVideo.get().ended || GlobalVideo.get().stopped)
+		if (GlobalVideo.get().ended || GlobalVideo.get().stopped)
 		{
 			txt.visible = false;
 			GlobalVideo.get().hide();
 			GlobalVideo.get().stop();
 		}
 		
-		if (controls.ACCEPT || GlobalVideo.get().ended)
+		if (GlobalVideo.get().ended)
 		{
 			notDone = false;
 			FlxG.sound.music.volume = fuckingVolume;
-			txt.text = pauseText;
 			FlxG.autoPause = true;
-			FlxG.switchState(transClass);
+			//FlxG.switchState(transClass);
+			transFunction();
 		}
 		
 		if (GlobalVideo.get().played || GlobalVideo.get().restarted)
