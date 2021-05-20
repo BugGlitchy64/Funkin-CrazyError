@@ -233,7 +233,10 @@ class PlayState extends MusicBeatState
 				  {
 					defaultCamZoom = 0.9;
 					curStage = 'stole';
-					FlxG.switchState(new VideoState('stole.webm'));
+					var video:FlxSprite = new VideoState('assets/videos/stole.webm', 3666);
+					video.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+					video.updateHitbox();
+					add(video);
 				  }
 		          default:
 		          {
@@ -710,6 +713,8 @@ class PlayState extends MusicBeatState
 	function startSong():Void
 	{
 		startingSong = false;
+
+		GlobalVideo.get().togglePause();
 
 		previousFrameTime = FlxG.game.ticks;
 		lastReportedPlayheadPosition = 0;
